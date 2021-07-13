@@ -1,5 +1,5 @@
 /*
-1. Các hàm xử lý cơ bản trong javacript
+1. Các hàm xử lý cơ bản trong javascript
 2. Object trong javascript
 3. Các hàm xử lý cơ bản trong array
 4. Javascript destructuring assignment
