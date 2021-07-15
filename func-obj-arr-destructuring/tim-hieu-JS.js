@@ -370,3 +370,8 @@ let {x1, y1, z1} = foo();
 
 console.log(x1 , y1, z1);  // 1 2 3
 // lưu ý: các biến phải có tên trùng với tên key của obj thì mới sử dụng đc (nếu ko trả về undefine)
+
+
+
+
+

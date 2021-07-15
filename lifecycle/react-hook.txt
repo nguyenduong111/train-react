@@ -1,0 +1,208 @@
+
+-----------------react hooks--------------------------
+
+* useState
+    + useState cho phép sử dụng state cục bộ trong một func component. 
+        Truyền state ban đầu cho func này và nó trả về một biến có giá trị state hiện tại 
+        (không nhất thiết là trạng thái ban đầu) và một hàm khác để cập nhật giá trị này.
+
+    + tác dụng tương tự như state dùng trong class component
+
+    + triển khai:
+    
+    import {useState} from 'react'
+
+    function ABC() {
+        const [myState, updateState] = useState(
+            {
+                name: "duong,
+                age: 20 
+            }
+        );
+
+        return (
+            ...
+        );
+    }
+
+    + khai báo và khởi tạo: thông thường useState() sẽ đi theo 1 cặp [myState, updateState]
+        myState tương đương với this.state của class
+        updateState tương đương với this.setState của class
+        (lưu ý: myState và updateState chỉ là tên đặt, có thể đặt tên khác )
+
+    + useState(initialStateValue); 
+        initialStateValue: giá trị ban đầu của state (ko nhất thiết phải là obj như class component)
+
+    + nếu như setState (class) là hợp nhất obj thì useState (func) là thay thế obj
+        có state = {name: "duong"};
+
+        setState({ age: '123' }); -----> state = {name: "duong", age: "123"};
+
+        useState: updateState({ age: '123' }); --------> state = {age: "123"};
+
+    + 
+    const [value, updateValue] = useState(0)
+
+    updateValue(1);
+    updateValue( previousValue => previousValue + 1 );
+
+    trong updateValue có thể nhận vào 1 function với đối số là value state trước đó
+
+
+* useEffect
+    + ứng dụng phổ biến là xóa một hiệu ứng sau một thời gian. 
+        Điều này có thể thực hiện được bằng cách trả về một hàm từ bên trong hàm hiệu ứng được truyền cho useEffect.
+
+    + useEffect có thể coi là sự kết hợp của componentDidMount, componentDidUpdate, và componentWillUnmount
+
+    + side effect là những hành động event có thể làm thay đổi DOM trong react components
+        gọi API, tương tác DOM, subscription, setTimeout, setInterval
+
+    + 2 loại effect phổ biến: không cần cleanup, và cần cleanup 
+
+    **effect không cần cleanup: (gọi API, tương tác DOM)
+        Muốn chạy một vài đoạn code sau khi React đã cập nhập DOM. Network request, 
+        tự ý thay đổi DOM, và logging là những ví dụ điển hình của effect không cần cleanup. 
+        Gọi như vậy vì có thể chạy chúng và quên ngay lập tức.
+
+        + ví dụ: chạy effect sau khi react đã cập nhập DOM
+            ----------------class component--------------------
+            class Example extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                    count: 0
+                    };
+                }
+
+                componentDidMount() {
+                    document.title = `You clicked ${this.state.count} times`;
+                }
+                componentDidUpdate() {
+                    document.title = `You clicked ${this.state.count} times`;
+                }
+
+                render() {
+                    return (
+                    (... something)
+                    );
+                }
+            }
+
+            --------------------function component-----------------
+            function Example() {
+                const [count, setCount] = useState(0);
+
+                useEffect(() => {
+                    document.title = `You clicked ${count} times`;
+                });
+
+                return (
+                (...something)
+                );
+            }
+
+        + Theo mặc định, useEffect chạy sau lần render đầu tiên và mỗi lần update.
+
+        + Không giống componentDidMount hoặc componentDidUpdate, effect chạy với useEffect không block trình duyệt cập nhập màn hình.
+
+    **Effect cần Cleanup: subscription, setTimeout, setInterval
+
+            useEffect(() => {
+                function handleStatusChange(status) {
+                    setIsOnline(status.isOnline);
+                }
+
+                ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+                
+                return () => {
+                    ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+                };
+            });
+
+* useContext
+    + useContext giúp bạn giảm bớt căng thẳng khi phải dựa vào Context theo ngữ cảnh. 
+        React Context có một API đơn giản hơn khi so sánh với MyContext.Consumer và API đạo cụ kết xuất mà nó thể hiện.
+
+    + Context: cung cấp cách để thực hiện chia sẻ dữ liệu tới các component trong cây mà không cần truyền dữ liệu qua props theo từng cấp bậc.
+
+
+* useLayoutEffect
+    + tác dụng tương tự useEffect
+
+    + phân biệt useLayoutEffect và useEffect
+        nếu cần thay đổi hình ảnh đối với DOM như một tác dụng phụ, 
+            thì useEffect sẽ không phải là lựa chọn tốt nhất.
+
+        Để ngăn người dùng nhìn thấy các thay đổi nhấp nháy, bạn có thể sử dụng useLayoutEffect. 
+            Hàm được chuyển cho useLayoutEffect sẽ được chạy trước khi trình duyệt cập nhật màn hình.
+
+* useReducer
+    + useReducer có thể được sử dụng thay thế cho useState. Nó lý tưởng cho state logic phức tạp trong đó có sự phụ thuộc vào
+        các giá trị state trước đó hoặc nhiều giá trị phụ của .
+
+    + nhận vào 2 đối số: 
+        const [state, dispatch] = useReducer(reducer, initialState)
+
+        const reducer = (state, action) => {
+            switch (action) {
+                case 'plus':
+                    return { width: state.width + 15 }
+                case 'minus':
+                    return { width: Math.max(state.width - 15, 2) }
+                default:
+                    throw new Error("what's going on?" )
+            }
+        }
+
+        const initialState = {       
+            width: 15;
+        };
+
+    + useReducer nhận tham số hàm thứ ba. Bạn có thể khởi tạo trạng thái từ hàm này và bất kỳ thứ gì được trả về từ hàm này
+        sẽ được trả về dưới dạng state obj. Hàm này sẽ được gọi với InitialState - tham số thứ hai.
+
+        const initializeState = () => ({
+        width: 100
+        })
+
+        const reducer = (state, action) => {
+            switch (action) {
+                case 'plus':
+                    return { width: state.width + 15 }
+                case 'minus':
+                    return { width: Math.max(state.width - 15, 2) }
+                default:
+                    throw new Error("what's going on?" )
+            }
+        }
+
+        const initialState = {       
+            width: 15;
+        };
+
+        const [state, dispatch] = useReducer(reducer, initialState, initializeState);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,203 @@
+
+----------life cycle components-------------
+
+---vòng đời của của components
+    3 giai đoạn chính: 
+
+    * tạo ra (mounting, thêm vào DOM, hiển thị lên UI)
+
+    * thay đổi (updating)
+
+    * hủy bỏ (unmounting, xóa khỏi DOM, xóa khỏi UI)
+
+    * xác minh hoạt động và không lỗi (error handling) 
+
+---sơ đồ lifecycle
++ sơ đồ đầy đủ của lifecycle: 
+    https://i0.wp.com/programmingwithmosh.com/wp-content/uploads/2018/10/Screen-Shot-2018-10-31-at-1.44.28-PM.png?resize=1024%2C567&ssl=1
++ sơ đồ thu gọn
+    https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/ogimage.png
+
+---trước khi đc render, component sẽ trải qua 3 giai đoạn: mounting, updating, unmounting 
+    
+    + trong mounting: mã code của mình và nội bộ React sẽ đc chèn vào DOM
+    
+    + trong updating: nếu ko có cập thành phần sẽ như cũ khi đc tạo ban đầu trong DOM -> dù có thay đổi hay không các thành phần vẫn sẽ trải qua giai đoạn cập nhật
+    
+    + unmounting: Ở giai đoạn này, thành phần "chết". Trong React lingo, nó bị xóa khỏi DOM.
+    
+    + error handling giai đoạn xử lý lỗi. Điều này xảy ra khi mã không chạy hoặc có lỗi ở đâu đó
+
+    + mounting và unmounting chỉ thực hiện duy nhất 1 lần, còn updating có thể đc thực hiện nhiều lần
+
++ chi tiết về các lifecycle
+
+----------------------------Mounting lifecycle methods-----------------------------
+
+* constructor()
+    
+    + nhớ: super(props);
+    
+    + thường dùng để: khai báo state, định nghĩa properties(tính chất) của component
+    
+    + Đây là phương thức đầu tiên được gọi trước khi thành phần được gắn vào DOM
+    
+    + ví dụ
+        class App() extends PureComponent {
+            constructor(props) {
+                super(props);
+
+                this.HANG_SO = 10; // LUÔN VIẾT HOA VÀ CÁCH BẰNG "_"
+
+                this.state = {
+                    productList: []
+                };
+            }
+        }
+
+* static getDerivedStateFromProps(props, state)
+    + static getDerivedStateFromProps là một phương thức để thay thế componentWillReceiveProps.
+
+    + Chức năng chính của nó là đảm bảo rằng trạng thái và đạo cụ được đồng bộ hóa khi được yêu cầu.
+
+    + có thể trả về 1 obj gắn vào state
+        static getDerivedStateFromProps(props, state) { 
+            return {
+                points: 200 // update state with this
+            }
+        }  
+    + hoặc trả về null nếu không updated
+
+* render()
+    + hàm hiển thị ra ngoài giao diện
+
+    + lưu ý: Một điều quan trọng cần lưu ý về phương thức reder() là hàm phải thuần túy,
+        tức là không cố gắng sử dụng setState hoặc tương tác với các API bên ngoài.
+
+* componentDidMount()
+    
+    + Sau khi render được gọi, thành phần được gắn vào DOM và phương thức componentDidMount được gọi.
+    
+    + để lấy một nút DOM từ cây thành phần ngay sau khi nó được mounting.
+
+    + gọi API, biến đổi dữ liệu, cập nhật state
+
+//------------------------------------------------------------------
+
+
+// ----------------------Updating lifecycle methods-----------------
+
+* static getDerivedStateFromProps()
+    + là phương thức đầu tiên được gọi trong giai đoạn cập nhật.
+
+    + lưu ý là phương pháp này được gọi trong cả giai đoạn moiunting và updating.
+
+    + được sử dụng khi state của một thành phần phụ thuộc vào các thay đổi của props.
+
+* shouldComponentUpdate()
+    + Khi phương thức state getDerivedStateFromProps được gọi, phương thức shouldComponentUpdate được gọi tiếp theo.
+
+    + Trong hầu hết các trường hợp, coder sẽ muốn một thành phần reder khi state hoặc props thay đổi. 
+        Tuy nhiên, có quyền kiểm soát hành vi này
+
+    + trả về boolean - true hoặc false - và kiểm soát xem thành phần có được updating hay không
+
+* render()
+    + Sau khi phương thức shouldComponentUpdate được gọi, reder() sẽ được gọi ngay sau đó, tùy thuộc vào giá trị trả về từ shouldComponentUpdate, 
+        giá trị này được mặc định là true.
+
+* getSnapshotBeforeUpdate()
+    
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+   
+    }
+
+
+    + getSnapshotBeforeUpdate lưu trữ các giá trị trước đó của state sau khi DOM được cập nhật. 
+        getSnapshotBeforeUpdate () được gọi ngay sau phương thức reder.
+
+    + nó có ích khi cần lấy thông tin từ DOM (và có khả năng thay đổi nó) ngay sau khi cập nhật.
+
+    + Phương thức vòng đời getSnapshotBeforeUpdate React không tự hoạt động. Nó có nghĩa là được sử dụng cùng với phương thức vòng đời componentDidUpdate
+
+    + ví dụ ứng dụng (hiển thị các tin nhắn trong chat)
+
+
+* componentDidUpdate()
+
+    componentDidUpdate(prevProps, prevState) {
+ 
+    }
+
+    + Như với phương thức getSnapshotBeforeUpdate, nó nhận các propst rước đó và trạng thái dưới dạng đối số
+
+    + Bất kỳ giá trị nào được trả về từ phương thức vòng đời getSnapshotBeforeUpdate sẽ được chuyển làm đối số thứ ba cho phương thức componentDidUpdate.
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+ 
+    }
+
+    + demo(cuộn trang)
+
+//------------------------------Unmounting lifecycle method----------------------------------------
+
+* componentWillUnmount()
+    + componentWillUnmount được gọi ngay lập tức trước khi một thành phần được ngắt kết nối và phá hủy. 
+        Nơi để thực hiện mọi thao tác dọn dẹp cần thiết như xóa bộ hẹn giờ, hủy yêu cầu mạng hoặc xóa bất kỳ đăng ký nào đã được tạo trong componentDidMount ()
+
+    + clear timeout, interval 
+    
+    + reset dữ liệu trên redux
+
+//-------------------------------------------------------------------------------------------------
+
+//----------------------------Error handling lifecycle methods-----------------------------------
+
+* static getDerivedStateFromError()
+    + Bất cứ khi nào một lỗi được phát hiện trong một thành phần con, 
+        phương thức này được gọi đầu tiên và lỗi đó được truyền dưới dạng một đối số.
+        
+        static getDerivedStateFromError(error) {
+            console.log(`Error log from getDerivedStateFromError: ${error}`);
+            return { hasError: true };
+        }
+    
+    + Bất kỳ giá trị nào được trả về từ phương thức này đều được sử dụng để cập nhật state của thành phần.
+
+* componentDidCatch()
+    + Phương thức componentDidCatch cũng được gọi sau khi một lỗi trong thành phần con được phát hiện. 
+        Ngoài lỗi được đưa ra, nó được truyền thêm một đối số biểu thị thêm thông tin về lỗi
+
+    componentDidCatch(error, info) {
+        logToExternalService(error, info) // this is allowed. 
+        //Where logToExternalService may make an API call.
+    }
+
+//----------------------------------------------------------------------------------------------
+
++ một vài lifecycle cũ: componentWillMount(), 
+                        componentWillReceiveProps()
+    chuyển sang sử dụng componentDidMount
+
++ nên sử dụng PureComponent thay vì Component 
+    do trong PureComponent có thêm hàm shouldComponentUpdate(): so sánh giá trị(===) trước và sau,
+    nếu khác nhau thì mới chuyển xuống hàm render 
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
