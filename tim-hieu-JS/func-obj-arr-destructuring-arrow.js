@@ -3,11 +3,8 @@
 2. Object trong javascript
 3. Các hàm xử lý cơ bản trong array
 4. Javascript destructuring assignment
+5. Arrow function và regular function
 */
-
-
-
-
 
 //---------------------Các hàm xử lý cơ bản trong javacript--------------------------------------
 
@@ -21,7 +18,7 @@ var encodedUri = "my%20test.asp?name=st%C3%A5le&car=saab";
 var decodedUri = decodeURI(encodedUri);
 console.log(decodedUri); // "my test.asp?name=ståle&car=saab"
 
-// 3. encodeURIComponent() được sử dụng 
+// 3. encodeURIComponent() được sử dụng
 // khi bạn muốn mã hóa URI trở thành một phần của URI khác.
 
 // 4. decodeURIComponent() được sử dụng khi bạn muốn giải mã một phần URI khác.
@@ -37,7 +34,7 @@ var x = 10;
 var y = 20;
 var a = eval("x * y");
 console.log(a); // 200
-console.log(typeof a ); // number (giữa nguyên kiểu)
+console.log(typeof a); // number (giữa nguyên kiểu)
 
 /* 6.
 isFinite(<value>) được sử dụng khi bạn muốn kiểm tra một số có phải là số hữu hạn hay không? 
@@ -60,9 +57,9 @@ parseFloat(<string>) được sử dụng khi bạn muốn chuyển một chuỗ
     Hàm sẽ chỉ chuyển được nếu chuỗi được bắt đầu bằng số (không tính các dấu khoảng cách như space, tab) và lấy ra số đầu tiên.
     Nếu không sẽ trả về NaN.
  */
-    parseFloat(" 60 "); // 60
-    parseFloat("40 years"); // 40
-    parseFloat("He was 40"); // NaN
+parseFloat(" 60 "); // 60
+parseFloat("40 years"); // 40
+parseFloat("He was 40"); // NaN
 
 /* 10.
 parseInt(<string>, <cơ số 2->36>) 
@@ -76,12 +73,6 @@ Nếu string bắt đầu với bất kỳ số nào sẽ là cơ số 10.
 // 11. String() được sử dụng khi bạn muốn ép một giá trị bất kỳ về dạng string
 
 //----------------------------------------------------------------------------------
-
-
-
-
-
-
 
 // ----------------------------Object trong javascript------------------------------
 // ví dụ về object
@@ -144,67 +135,69 @@ delete myInfo[myKey];
 delete myInfo['12abc'];
 */
 
-// object constructor, function constructor, hàm tạo   
+// object constructor, function constructor, hàm tạo
 
 //tạo obj constructor
-function User(firstName, lastName, avatar) {           //declaration funnc
-    //var User = function(firstName, lastName, avatar) {   //expression func
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.avatar = avatar;
-        this.getName = function() {
-            return `${this.firstName} ${this.lastName}`;
-        }
-    }
-    
-    // lưu ý :
-    /*
+function User(firstName, lastName, avatar) {
+  //declaration funnc
+  //var User = function(firstName, lastName, avatar) {   //expression func
+  this.firstName = firstName;
+  this.lastName = lastName;
+  this.avatar = avatar;
+  this.getName = function () {
+    return `${this.firstName} ${this.lastName}`;
+  };
+}
+
+// lưu ý :
+/*
     + tên của obj constructor quy ước viết hoa chữ cái đầu
     + obj contructor không phải là đối tượng, nó chỉ mô tả đối tượng
     + obj constructor có thể đc tạo bởi declaration func hoặc expression func
     */
-    // tạo đối tượng
-    var teacher = new User('Vũ', 'Nhung', 'avt');
-    var student = new User('Nguyễn', 'Dương', 'avt');
-    
-    /*
+// tạo đối tượng
+var teacher = new User("Vũ", "Nhung", "avt");
+var student = new User("Nguyễn", "Dương", "avt");
+
+/*
     + phải dừng từ khóa new
     + sau khi cấp phát teacher và student mới là 1 đối tượng obj
     + muốn truy xuất constructor của đối tượng có thể làm như sau
         console.log(teacher.constructor);
     */
-    
-    // thêm thuộc tính đặc trưng cho từng đối tượng
-    student.id = '1a2b3c';
-    teacher.email = 'teacher@mail.com'
-    
-    // obj prototype
-    /*
+
+// thêm thuộc tính đặc trưng cho từng đối tượng
+student.id = "1a2b3c";
+teacher.email = "teacher@mail.com";
+
+// obj prototype
+/*
     + thêm thuộc tính sau khi đã có hàm tạo
     + sau khi thêm, tất cả các obj đc tạo từ hàm tạo đó đều sẽ nhận đc 
     + dùng để KẾ THỪA các hàm tạo
     */
-    /*
+/*
     // thêm thuộc tính và phương thức
     User.prototype.schoolName = 'THPT C';
     User.prototype.getSchoolName = function() {
         return this.schoolName;
     }
     */
-    //kế thừa
-    function congNhan(age) {    // hàm kế thừa
-        this.age = age;
-    }
-    
-    congNhan.prototype = new User('vu', 'khai', 'avt');  // kế thừa hàm User
-    
-    var cn_1 = new congNhan(20);
-    
-    console.log(cn_1); 
-    console.log(cn_1.getName());
-    //console.log(teacher);
-    //console.log(student.getSchoolName());
-    
+//kế thừa
+function congNhan(age) {
+  // hàm kế thừa
+  this.age = age;
+}
+
+congNhan.prototype = new User("vu", "khai", "avt"); // kế thừa hàm User
+
+var cn_1 = new congNhan(20);
+
+console.log(cn_1);
+console.log(cn_1.getName());
+//console.log(teacher);
+//console.log(student.getSchoolName());
+
 // các phương thức Obj
 
 // 1. Object.assign() : Sao chép các gía trị của tất cả các thuộc tính riêng từ một hoặc nhiều object vào một object khác.
@@ -237,12 +230,6 @@ function User(firstName, lastName, avatar) {           //declaration funnc
 
 //----------------------------------------------------------------------------------------
 
-
-
-
-
-
-
 //-------------------------------Các hàm xử lý cơ bản trong array---------------------------
 
 // 1. concat() được sử dụng khi bạn muốn gộp nhiều mảng lại với nhau, phương thức này sẽ trả về một mảng mới.
@@ -258,21 +245,27 @@ Cú pháp: array.copyWithin(target, start, end). Trong đó:
 // ví dụ:
 var fruits = ["Banana", "Orange", "Apple", "Mango"];
 fruits.copyWithin(2);
-console.log(fruits)  // ["Banana", "Orange", "Banana", "Orange"]
- 
+console.log(fruits); // ["Banana", "Orange", "Banana", "Orange"]
+
 // Copy các phần tử từ vị trí 2 tới vị trí 4 sau đó ghi đè từ vị trí 0
-var samsungPhones = ["galaxy s1", "galaxy s2", "galaxy s3", "galaxy s4", "galaxy s5"];
+var samsungPhones = [
+  "galaxy s1",
+  "galaxy s2",
+  "galaxy s3",
+  "galaxy s4",
+  "galaxy s5",
+];
 samsungPhones.copyWithin(0, 2, 4);
 console.log(samsungPhones); // ["galaxy s3", "galaxy s4", "galaxy s3", "galaxy s4", "galaxy s5"]
 
 // 3. entries() sẽ trả về một Array iterator từ mảng ban đầu, có giá trị là một cặp [key, value].
 var fruits = ["Banana", "Orange", "Apple", "Mango"];
 var f = fruits.entries();
- 
+
 for (let pair of f) {
   console.log(pair);
 }
-        /*
+/*
         Output:
         
         [0, "Banana"]
@@ -286,14 +279,14 @@ for (let pair of f) {
 
 // 5. Phương thức fill() sẽ làm cho tất cả các phần tử trong mảng trở thành một giá trị giống nhau.
 
-    // Cú pháp: array.fill(value, start, end)
+// Cú pháp: array.fill(value, start, end)
 
 // 6. from() được sử dụng khi bạn muốn tạo ra một mảng mới từ một đối tượng dạng mảng.
 
 var myArr = Array.from("123456", function (item, index, arr) {
-    return item * 2;
+  return item * 2;
 });
- 
+
 console.log(myArr); // [2, 4, 6, 8, 10, 12]
 
 // 7. join() được sử dụng khi bạn muốn nối các phần tử của mảng thành một string.
@@ -323,15 +316,9 @@ item1,… itemX: Là các phần tử sẽ được thay thế vào mảng kể 
 
 //------------------------------------------------------------------------------------
 
-
-
-
-
-
-
 // ---------------------------Javascript destructuring assignment-----------------------
 
-// tác dụng: để lấy giá trị của array(bao gồm cả: strings, arrays, sets, maps, function arguments, DOM elements) và object một cách 
+// tác dụng: để lấy giá trị của array(bao gồm cả: strings, arrays, sets, maps, function arguments, DOM elements) và object một cách
 //  nhanh, thuận tiện
 /*
     destructuring hay đc đi cùng với rest
@@ -344,7 +331,7 @@ item1,… itemX: Là các phần tử sẽ được thay thế vào mảng kể 
 */
 
 // ví dụ với string
-let message = 'Hello';
+let message = "Hello";
 // let [a, b] = message;
 // let [x, y, ...z] = message;
 
@@ -359,17 +346,198 @@ let message = 'Hello';
 
 // Obj
 function foo() {
-    return {
-        x1: 1, 
-        y1: 2,
-        z1: 3
-    };
+  return {
+    x1: 1,
+    y1: 2,
+    z1: 3,
+  };
 }
 
-let {x1, y1, z1} = foo();
+let { x1, y1, z1 } = foo();
 
-console.log(x1 , y1, z1);  // 1 2 3
+console.log(x1, y1, z1); // 1 2 3
 // lưu ý: các biến phải có tên trùng với tên key của obj thì mới sử dụng đc (nếu ko trả về undefine)
+
+//-----------------------------Arrow function và regular function-----------------------------------
+
+// cú pháp: arrow func
+
+// const a = (c, b) => b + c;
+
+// const b = c => {
+//     let b = 2;
+//     return c + b;
+// };
+
+// cú pháp regular function
+
+// const c = function (a,b) {
+//     return a + b;
+// };
+
+// function sum (b, a) {
+//     return a + b;
+// }
+
+// sự khác nhau của Arrow function và regular function
+/*
+----- 1. this-------------
+    * regular function: 
+        + this trong func thường là ngữ cảnh động, giá trị phụ thuộc vào cách hàm đc gọi
+            
+        1.  function myFunction() {
+                console.log(this);
+            }
+            myFunction(); // lỗi
+
+        2. gọi bình thường trong phương thức của Obj
+
+        3. gọi gián tiếp sử dụng myFunc.call(thisVal, arg1, ..., argN)
+            hoặc myFunc.apply(thisVal, [arg1, ..., argN])
+            giá trị của this bằng với đối số đầu tiên:
+
+        4. khi gọi hàm tạo bằng cách sử dụng new, this bằng với phiên bản mới được tạo
+
+    
+    * arrow func:
+        + Bất kể được thực thi như thế nào hay ở đâu, giá trị this bên trong của một hàm mũi tên luôn bằng giá trị this của hàm bên ngoài.
+        
+        const myObject = {
+          myMethod(items) {
+            console.log(this); // logs myObject
+            const callback = () => {
+              console.log(this); // logs myObject
+            };
+            items.forEach(callback);
+          },
+        };
+        
+        myObject.myMethod([1, 2, 3]);
+
+----- 2. constructor-------------------
+    
+    * regular function: 
+        
+        function Car(color) {
+            this.color = color;
+        }
+
+        const redCar = new Car('red');
+        redCar instanceof Car; // => true
+
+        + Khi được gọi với newtừ khóa new Car('red')- các phiên bản mới của Carloại được tạo.
+
+    * arrow func:
+        
+        const Car = (color) => {
+            this.color = color;
+        };
+
+        const redCar = new Car('red');
+
+        + gọi một hàm mũi tên có tiền tố newtừ khóa, JavaScrip sẽ gặp lỗi
+
+    
+---- 3. arguments object------------------
+    * regular function: 
+        function myFunction() {
+            console.log(arguments);
+        }
+
+        myFunction('a', 'b'); // arguments { 0: 'a', 1: 'b', length: 2 }
+
+    * arrow func:
+        
+        + không có từ khóa đặc biệt arguments nào được xác định bên trong một hàm mũi tên.
+
+        function myRegularFunction() {
+          const myArrowFunction = () => {
+            console.log(arguments);
+          };
+        
+          myArrowFunction("c", "d");
+        }
+        
+        myRegularFunction("a", "b"); // logs { 0: 'a', 1: 'b', length: 2 }
+        
+        + nếu muốn truy cập trực tiếp đối số
+
+        function myRegularFunction() {
+          const myArrowFunction = (...args) => {
+            console.log(args);
+          };
+        
+          myArrowFunction("c", "d");
+        }
+        
+        myRegularFunction("a", "b"); // logs ['c', 'd']
+
+-----4. Implicit return-----------------------
+    * regular function:
+
+        function myFunction() {
+            return 42;
+        }
+
+        myFunction(); // => 42
+
+        + Nếu return bị thiếu hoặc không có biểu thức sau câu lệnh trả về, thì hàm thông thường sẽ trả về ngầm định undefined
+
+    * arrow func:
+
+        const increment = (num) => num + 1;
+
+        increment(41); // => 42
+
+------5. Methods-----------------------
+    
+    * regular function:
+
+        class Hero {
+        constructor(heroName) {
+            this.heroName = heroName;
+        }
+
+        logName() {
+            console.log(this.heroName);
+        }
+        }
+
+        const batman = new Hero("Batman");
+
+        setTimeout(batman.logName, 1000);  // "undefined"  
+
+        setTimeout(batman.logName.bind(batman), 1000); // "Batman"
+
+    * arrow func:
+        
+        class Hero {
+          constructor(heroName) {
+            this.heroName = heroName;
+          }
+        
+          logName = () => {
+            console.log(this.heroName);
+          };
+        }
+        
+        const batman = new Hero("Batman");
+        
+        setTimeout(batman.logName, 1000); "Batman"
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

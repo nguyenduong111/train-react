@@ -1,0 +1,417 @@
+
+Tìm hiểu class component
+Tìm hiểu function component 
+Tìm hiểu về state, props trong class và function component
+Cách component cha thay đổi giá trị của state của component con            (demo trong project tim-hieu-component)
+Cách component con thay đổi gia trị của props từ component cha truyền vào  (demo trong project tim-hieu-component)
+
+
+--------------------------------class component-------------------------------
+import React, { Component } from "react";
+
+class TenClass extends Component {
+    render() {
+        return (
+            <div>
+            ....
+            </div>
+        );
+    }
+}
+
+export default TenClass;
+
++ class TenClass kế thừa từ class Component (đc import trong react)
++ trong TenClass chỉ có 1 hàm render() và return trong render
++ hàm render() là hàm hiển thị ra giao diện
++ trong return chỉ đc trả về duy nhất 1 thẻ (tag)
+
+
+------------------------------function component--------------------------------
+import React from "react";
+
+function TenClass() {
+    return(
+        <div>
+            ...
+        </div>
+    );
+}
+
+export default TenClass;
+
++ trong return chỉ đc trả về duy nhất 1 thẻ (tag)
+
+
+------------------------------- Props -------------------------------------
+
++ là các thuộc tính của components
+
++ truyền dữ liệu từ "cha" sang "con", theo dạng key="value" (*lưu ý: ko đặt tên key là children)
+    value nhận vào kiểu string. Nếu muốn truyền đúng kiểu dữ liệu thì key={value}
+
++ nhận value trong "con"
+    * class (kế thừa từ class Component)
+        nhận value: {this.props.key}
+
+    * function(props)
+        nhận value: {props.key}
+
++ nội dung của thẻ sẽ đc truyền vào props.children
+    "cha" : <Product> nội dung </Product>
+    "con" : {props.children}     (nội dung)
+
++ ví dụ với function:
+    ------- func cha---------
+
+    import React from "react"
+    import Con from "children"
+
+    function Cha() {
+        const name = "duong";
+        const id = 123; 
+        
+        return(
+            <div>
+                <Con 
+                    id = {id};
+                    name = {name}
+                />
+            </div>
+        );
+    }
+
+    -------- func con ---------
+
+    import React from "react";
+
+    function Con(props) {
+        return(
+            <div>
+                <h1> {props.name} </h1>
+                <h2> {props.id} </h2> 
+            </div>
+        );
+    }
+    
++ ví dụ với class:
+    ------- class cha---------
+
+    import React, {Component} from "react"
+    import Con from "children"
+
+    class Cha extends Component {
+        const name = "duong";
+        const id = 123; 
+        
+        render() {
+            return(
+                <div>
+                    <Con 
+                        id = {id};
+                        name = {name}
+                    />
+                </div>
+            );
+        }
+    }
+
+    -------- class con ---------
+
+    import React, {Component} from "react";
+
+    class Con extends Component {
+        constructor(props) {
+            super(props);
+        }
+        
+        render() {
+            return(
+                <div>
+                    <h1> {this.props.name} </h1>
+                    <h2> {this.props.id} </h2> 
+                </div>
+            );
+        }
+    }
+
+
+-------------------------- State ----------------------------------
+
+
++ là các trạng thái của component
++ khai báo những giá trị cần lưu trữ riêng của componenent đó
+
++ bảng so sánh state với props 
+
+    * props: + nhận dữ liệu từ ngoài
+             + không thể thay đổi giá trị 
+
+    * state: + dữ liệu nội bộ
+             + có thể thay đổi giá trị
+
+* state hook (function component)
+    import React, {useState} from 'react';    // import thư viện useState
+
+    const [value, setValue] = useState(<giá trị ban đầu value>);
+    // là [] vì useState() trả về 1 arr
+    // luôn luôn là 1 cặp [value, setValue] đi với nhau
+        value chứa giá trị
+        setValue để quản lý value (thay đổi)
+
+    + ví dụ: 
+        const [active, setActive] = useState({isActive: true}); // khởi tạo
+        ....
+        active = {isActive: true}
+        active.isActive = true
+
+        // để thay đổi giá trị active phải dùng qua setActive
+        // ko thể trực tiếp thay đổi gán lại giá trị cho active đc
+        // active ko nhất thiết phải là obj
+        // tên đặt trong [] là bất kì [duong, nguyen] = useState(1)
+ 
+        setActive(
+            {
+                isActive: false
+            }
+        )
+
+        active = {isActive: false}
+        active.isActive = false
+
+* state trong class component
+
+    // khởi tạo state trong constructor()
+    constructor(props) {
+        super(props);
+        this.state = {
+            isActive: true,
+            abc: def,
+            ase: 123
+        };
+    }
+
+    // lưu ý: state bắt buộc là obj
+    // sử dụng
+    this.state.isActive = true
+
+    // thay đổi state
+    this.setState(
+        {
+            isActive: false
+        }
+    )
+
+-----------Cách component cha thay đổi giá trị của state của component con--------------------------
+
+    "cha" truyền props sang "con" ----> "con" nhận props đó và setState cho state
+
+    ------- "cha" -----------
+    function Cha() {
+        const name = "duong";
+
+        return(
+            <>
+                <Con name={name} />
+            </>
+        );
+    }
+
+    -------- "con" --------------
+    function Con(props) {
+        let [myName, setName] = useState(
+            {
+                name: "abc"
+            }
+        );
+
+        const onClick = () => {
+            setName(
+                {
+                    name: props.name
+                }
+            );
+        }
+
+        return(
+            <div>
+                <h1> {myName.name} </h1>
+                <button onClick={onClick}>click</button>
+            </div>
+        );
+    }
+
+----------------Cách component con thay đổi giá trị của props từ component cha truyền vào--------------------
+
+"cha" truyền 1 props func có tham số(pram) vào "con" ----> "con" truyền giá trị vào props func kia -----> "cha" nhận đc pram từ "con"
+
+function App() {
+  const [myId, setId] = useState(
+    {
+      id: 110101
+    }
+  );
+
+
+  const onChange = (data) => {
+    setId(
+      {
+        id: data.id
+      }
+    );
+  }
+
+  return (
+    <div>
+
+      <h1>Cách component con thay đổi giá trị của props từ component cha truyền vào</h1>
+      <h2> {myId.id} </h2>
+      <Con_2
+        onChange = {onChange}
+      />
+
+    </div>
+  );
+}
+
+function Con_2(props) {
+    let [myName, setName] = useState(
+        {
+            id: 123456
+        }
+    );
+
+    const onClick = () => {
+        props.onChange(myName);
+    }
+
+    return(
+        <div>
+            <button onClick={onClick}>click</button>
+        </div>
+    );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -50,13 +50,24 @@
 
 
 * useEffect
-    + ứng dụng phổ biến là xóa một hiệu ứng sau một thời gian. 
-        Điều này có thể thực hiện được bằng cách trả về một hàm từ bên trong hàm hiệu ứng được truyền cho useEffect.
 
+    + đc thực thi sau mỗi lần render (thực thi ít nhất 1 lần sau lần render đầu tiên)
+
+    + từ những lần render sau, useEffect sẽ chỉ đc gọi nếu như dependencies thay đổi
+
+    + Effect cleanup sẽ đc thực thi trước run effect lần tiếp theo hoặc unmount
+    
     + useEffect có thể coi là sự kết hợp của componentDidMount, componentDidUpdate, và componentWillUnmount
 
     + side effect là những hành động event có thể làm thay đổi DOM trong react components
         gọi API, tương tác DOM, subscription, setTimeout, setInterval
+
+    + useEffect(callback, dependencies);
+        (3 trường hợp của dependencies 
+            + ko có: hàm sẽ luôn luôn đc chạy sau render
+            + [] : chạy duy nhất 1 lần sau render lần đầu
+            + [<value>] : sẽ render nếu value thay đổi sau render
+        )
 
     + 2 loại effect phổ biến: không cần cleanup, và cần cleanup 
 
@@ -102,9 +113,27 @@
                 );
             }
 
+
+
+
+        + ---------------------class -------------------
+             componentDidMount() {
+                 //
+             }
+
+             componentWillUnmount() {
+                 //
+             }
+        ---------------------function--------------------
+            useEffect(() => {
+                //
+            }, []);
+
         + Theo mặc định, useEffect chạy sau lần render đầu tiên và mỗi lần update.
 
         + Không giống componentDidMount hoặc componentDidUpdate, effect chạy với useEffect không block trình duyệt cập nhập màn hình.
+
+
 
     **Effect cần Cleanup: subscription, setTimeout, setInterval
 
@@ -183,9 +212,132 @@
 
         const [state, dispatch] = useReducer(reducer, initialState, initializeState);
 
+(khái niệm memoization: là 1 kĩ thuật giúp tăng tốc độ xử lý, cụ thể: nó sẽ lưu lại kết quả của các lần 
+    tính toán trước đó, nếu như gặp lại bộ input cũ thì ko cần phải tính toán nữa mà đưa ra kết quả luôn)
+
+* react.memo()
+    + là 1 HOC, không phải hooks
+    + tương tự như PureComponent
+    + dùng trong func component
+    + chỉ render lại component nếu props thay đổi
+    + nếu trong những trường hợp đơn giản (như log ra 1 string nào đó) thì ko cần thiết phải sử dụng react.memo()
+        trong trường hợp render lại các phần tử phức tạp (nguyên đồ thị) thì nên hạn chế re-render bằng cách sử dụng react.memo()
+
+    + ví dụ
+    -----------class-----------------
+    export default class ABC extends PureComponent {
+        render() {
+            return (
+                //
+            );
+        }
+    }
+
+    -------------func-----------------
+    function ABC() {
+        return (
+            //
+        );
+    }
+
+    export default React.memo(ABC);
+
+* useCallback
+    + được sử dụng để tối ưu quá trình render của func component. Hữu ích đối với trường hợp một component liên tục được re-render không cần thiết 
+        trong quá trình xử lý sự kiện người dùng và có hành vi chức năng phức tạp.
+
+    + useCallback trả về một callback đã ghi nhớ. Việc bao bọc một thành phần bằng React.Memo () báo hiệu ý định sử dụng lại mã. 
+        Điều này không tự động mở rộng cho các hàm được truyền dưới dạng tham số.
+
+    + React lưu một tham chiếu đến hàm khi được bao bọc bởi useCallback.
+
+    + tạo ra memoized callback, chỉ tạo ra callback mới khi arr(dependencies) thay đổi, nếu dùng empty dependencies thì không bao h tạo ra func mới 
+
+    + ví dụ 1 componet dùng useCallback với empty dependencies
+        function App() {
+            const abc = useCallback(() => {}, [])
+            return (
+                <div>
+                //
+                </div>
+            );
+        }
+
+        (hàm abc sẽ chỉ đc gọi đúng 1 lần trong lần render đầu tiên, các lần render sau sẽ trả về nguyên abc lần đầu)
+
+    + ví dụ 1 componet dùng useCallback với dependencies
+
+        function Counter() {
+            const [count, setCount] = useState(0);
+            const [countOther, setCountOther] = useState(0);
+            
+            const increase = useCallback(() => setCount(count + 1), [count]);
+            const decrease = useCallback(() => setCount(count - 1), [count]);
+                
+            const increaseOther = useCallback(() => setCountOther(countOther + 1), [countOther]);
+            const decreaseOther = useCallback(() => setCountOther(countOther - 1), [countOther]);
+
+            return (
+                <>
+                    <div>Count: {count}</div>
+                    <button onClick={increase}>+</button>
+                    <button onClick={increase}>-</button>
+
+                    <div>Count other: {countOther}</div>
+                    <button onClick={increaseOther}>+</button>
+                    <button onClick={decreaseOther}>-</button>
+                </>
+	        )
+        }
+
+        Mỗi lần click vào bất kì nút tăng giảm sẽ 
+            sẽ tạo ra phiên bản hoàn toàn mới của các hạm được tạo ra (re-render).
 
 
+* useMemo
 
+    + Hàm useMemo trả về một giá trị đã được ghi nhớ. useMemo khác với useCallback ở chỗ nó nội bộ hóa các giá trị trả về 
+        thay vì toàn bộ các hàm. Thay vì truyền một xử lý cho cùng một hàm, React bỏ qua hàm và trả về kết quả trước đó, 
+        cho đến khi các tham số thay đổi    
+
+    + sử dụng useMemo ngăn chặn việc re-render 
+
+    + tạo ra một memoixed value, chỉ tính toán value mới khi dependencies thay đổi
+
+    + tham số truyền vào tương tự như useCallback
+
+    + demo:
+        function App() {
+            const data = useMemo(() => [{}, {}, {}], []);
+            return (
+                <div>
+                    //
+                </div>
+            );
+        } 
+
+* useRef    
+
+    + tác dụng: lấy ra các giá trị hoặc trả về tag html (input, textarea,...)
+
+    + cách dùng: tại thẻ cần tương tác thêm attribute ref
+
+        import React, { useRef } from 'react';    
+
+        const myRef = useRef(null);     // khởi tạo
+
+        const func = () => {
+            // hàm tương tác
+            // cách truy cập đến refs
+                let temp = myRef             // trả về thẻ html có attribute ref={myRef}
+                let temp = myRef.current     // truy cập vào thuộc tính của thẻ 
+                
+                // ví dụ
+                let temp = myRef.current.value   // trả về string chứa trong <input>
+        }
+
+        ...
+        <input ref={myRef} />
 
 
 
