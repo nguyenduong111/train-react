@@ -1,0 +1,240 @@
+
+--------------------------------------React refs------------------------------------------
+
++ React refs là một tính năng hữu ích, có thể để tham chiếu một element trong DOM hoặc từ một class component con đến component cha. 
+    Điều này cho phép chúng ta đọc và chỉnh sửa các element đó.
+
++ Khi một element được gán vào một ref nó sẽ cho phép chúng ta sửa đổi cũng như truy cập vào element đó ngay lập tức 
+    và không cần sử dụng đến props hay state để component re-render lại. 
+    
++ Tương tự như việc can thiệp vào DOM như trong Javascript DOM
+
++ Mặc dù đây là cách để can thiệp vào DOM thuận tiện mà không cần phải sử dụng đến state, props 
+    nhưng điều này React không khuyến khích. Bởi khi các DOM bị thay đổi thì nó sẽ ảnh hưởng một phần nào đó đến quá trình render 
+    các component. 
+
++ cách dùng (class component)
+
+    + khởi tạo ref (trong constructor) this.<tên ref> = React.createRef();
+    + trong tag(element) cần truy cập thêm attribute ref={this.<tên ref>}
+    + cách dùng: this.<tên ref>.current : chứa các phương thức thuộc tính của elem đc truy cập (log ra để xem)
+
+    import React from "react";
+ 
+    export default class MyComponent extends React.Component {
+        constructor(props) {
+            super(props);
+            this.myRef = React.createRef();
+        }
+    
+        handleClick = () => {
+            this.myRef.current.focus();
+        }
+        
+        render() {
+            return (
+            <>
+                <input
+                    name="email"
+                    onChange={this.onChange}
+                    ref={this.myRef}
+                    type="text"
+                />
+                
+                <button onClick={this.handleClick}>
+                    Focus Input
+                </button>
+            </>
+            );
+        }
+    }
+
++ cách dùng (func component)
+
+    import React, { useRef } from "react";
+ 
+    export default function MyComponent() {
+            
+        const myRef = useRef(null);     // khởi tạo
+
+        const handleClick = () => {
+            myRef.current.focus();      // sử dụng
+        }
+                
+        return (
+        <>
+            <input
+                name="email"
+                onChange={onChange}
+                ref={myRef}                      // khai báo attribute trong elem
+                type="text"
+            />
+            
+            <button onClick={handleClick}>
+                Focus Input
+            </button>
+        </>
+        );
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

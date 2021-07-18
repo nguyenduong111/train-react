@@ -6,10 +6,11 @@
 
 + (HOC) là một phần tử nâng cao để sử dụng lại logic trong các thành phần React. Các thành phần nhận một hoặc nhiều thành phần làm đối số và trả về một component mới được cập nhật
 
++ có thể tái sử dụng lại code
+
 + cách sử dụng 
     tạo ra 1 func có tham số là 1 component, và trả về component.
 
-+ có thể tái sử dụng lại code
 
 + demo: thực hiện hover vào các img (trong folder demo-hoc)
     file App.js (file xử lý chính)

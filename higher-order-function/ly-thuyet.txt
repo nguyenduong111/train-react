@@ -1,0 +1,18 @@
+
+ví dụ thực hành trong file demo.js
+
+---------------------------------HOF---------------------------------
+
+HOF là một function mà cho phép thực hiện ít nhất 1 trong 2 khả năng sau:
+
+・Nhận vào một hoặc nhiều function như là tham số, hoặc/và
+
+・Trả về kết quả là một function.
+
+
+------------------------------Currying--------------------------------
+
+Currying là kỹ thuật mà cho phép chuyển đổi một function với nhiều tham số
+    thành những functions liên tiếp có một tham số.
+
+// Ví dụ f(a,b,c) có thể được convert thành g(a)h(b, c) hay g(a)h(b)k(c), thậm chí là đổi thứ tự của các function tương ứng...
