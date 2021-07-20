@@ -1,0 +1,22 @@
+
+--------------------react-router------------------------------
+
++ giúp các component đồng bộ với URL
+
++ tải trang nhanh 
+
++ các thành phần tìm hiểu
+
+    tạo hiệu ứng chuyển trang (SPA) -> ko load lại trang (Link NavLink)
+
+    activeStyle, activeClassName 
+
+    không tìm thấy router
+
+    lấy tham số URL: mactch
+
+    Prompt
+
+    Redirect
+
+    

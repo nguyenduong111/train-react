@@ -1,0 +1,54 @@
+
+---------------------------------useRef--------------------------------------------
+
++ useRef(initialValue)là một React hook tích hợp sẵn chấp nhận một đối số làm giá trị ban đầu và trả về một tham chiếu (ref). 
+    Tham chiếu là một đối tượng có thuộc tính đặc biệt current.
+
++ 2 quy tắc cần nhớ về references (ref):
+    
+    Giá trị của ref được duy trì (giữ nguyên) giữa các lần component re-renderings.
+    
+    Cập nhật ref không kích hoạt component re-rendering.
+
++ 2 điểm khác biệt chính giữa ref và state:
+
+    Cập nhật ref không làm re-render, trong khi cập nhật state làm cho component re-render;
+
+    Cập nhật ref là đồng bộ (giá trị ref được cập nhật có sẵn ngay lập tức), 
+        trong khi cập nhật state là không đồng bộ (biến state được cập nhật sau khi re-render).
+
++ cập nhật một ref (cũng như state) không nên được thực hiện bên trong phạm vi ngay lập tức của function component.
+
++ demo trong folder demo-uesref / App.js
+
+    1. thay đổi giá trị biến tham chiếu
+        khi giá trị tham chiếu thay đổi ko làm component bị render
+
+    2. Truy cập các phần tử DOM
+        3 bước:
+
+        Xác định tham chiếu để truy cập phần tử const elementRef = useRef();
+        Gán tham chiếu đến refthuộc tính của phần tử : <div ref={elementRef}></div>;
+        Sau khi gắn, elementRef.current trỏ đến phần tử DOM
+
+
+-------------------------------forwardRef + useImperativeHandle--------------------------------
++ Một ref được tạo khi component đã mount. ref được gán cho một element, muốn truyền ref thông qua component thì dùng forwardRef.
+
++ Ref có thể được sử dụng để truy cập đến DOM node hoặc React element. 
+    Ngoài ra còn dùng để lưu trữ các biến có thể mutate mà không làm re-render component.
+
++ useImperativeHandle thường đi kèm với forwardRef, trong khi forwardRef có tác dụng truyền ref thông qua component thì 
+    useImperativeHandle khai báo những phương thức trong "con" để "cha" có thể sử dụng, hoặc thực hiện những thay đổi elem từ bên ngoài "con" thông qua ref
+    đc truyền vào
+
+
+
+
+
+
+
+
+
+
+

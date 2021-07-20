@@ -129,7 +129,7 @@
  
     }
 
-    + Như với phương thức getSnapshotBeforeUpdate, nó nhận các propst rước đó và trạng thái dưới dạng đối số
+    + Như với phương thức getSnapshotBeforeUpdate, nó nhận các props trước đó và trạng thái dưới dạng đối số
 
     + Bất kỳ giá trị nào được trả về từ phương thức vòng đời getSnapshotBeforeUpdate sẽ được chuyển làm đối số thứ ba cho phương thức componentDidUpdate.
 
