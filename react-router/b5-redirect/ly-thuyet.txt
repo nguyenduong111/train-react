@@ -1,0 +1,41 @@
+------------------------redirect-----------------------------------------
+
++ chức năng 
+
+    + Chuyển trang
+        <Redirect to="path trang cần đến" />
+
+    + Có thể truy xuất đc thông tin trang trước đó thông qua đối tượng location
+        + cấu hình trong route 
+            {
+                path: "/login",
+                exact: false,
+                main: ({location}) => <Login location={location} />
+            },
+
+        + khai báo trong component bắt đầu
+            <Redirect to={{
+                pathname: "/products",
+                state: {
+                    from: location,
+                    keyLocal: keyLocal
+                }
+            }} />
+
+            pathname: path của trang đích đến
+            state: {
+                truyền các phần tử từ trang hiện tại sang trang đích qua location
+            }
+        
+        + trong trang đích có thể gọi dữ liệu qua props.location
+        
+        let {location} = props;
+        console.log(location);
+
+        const keyLocal = location.state.keyLocal;;
+
+
++ demo: thực hiện xong form đăng nhập trước khi đc xem mục "Sản Phẩm"
+        trong file Login.js 
+
++ demo: truyền dữ liệu về userName từ Login.js sang Products.js qua phần tử location <Redirect />

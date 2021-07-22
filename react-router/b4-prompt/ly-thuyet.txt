@@ -1,0 +1,14 @@
+
+---------------------------prompt--------------------------------
+
++ tác dụng: Xác nhận trước khi chuyển trang
+    (ví dụ: ng dùng đang nhập dở form, bấm chuyển trang khác, để tránh mất dữ liệu, cần hiện thị thông báo xác nhận chuyển trang)
+
+    <Prompt 
+        when={true/false}  : khi nào thì chuyển trang
+        message={location => ("thông báo chuyển trang ${location.pathname} ")}
+            
+            location.pathname: địa chỉ path của trang sẽ đc chuyển đến
+    />
+
++ demo trong components/Contact.js

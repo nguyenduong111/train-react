@@ -1,0 +1,22 @@
+-------------------------Đối tương: match----------------------
+
++ là đối tượng giúp truy cập đc vào các thuộc tính, phương thức của Route (path, url, params,...) 
+
++ cách sử dụng: 
+    + khi cấu hình Route
+        {
+            path: "/products",
+            exact: false,
+            main: ({match}) => <Products match={match} />
+        },
+
+    + sử dụng trong component qua props
+        let {match} = props;
+        console.log(match);
+        let name = match.params.name;
+
++ demo được sử dụng trong 
+
+        routes.js
+        components/Products.js
+        components/Product.js

@@ -1,0 +1,108 @@
+//-------------------------------------------------
++ cài thư viện
++ <Router>
++ <Route>
++ <Link>
++ <NavLink>
++ custom link
++ <Switch>
++ tách file cấu hình router
+//-------------------------------------------------
+
++ cài thư viện react-router-dom
+
+    npm install react-router-dom --save
+
++ có 2 vấn đề cần quan tâm
+ 
+    nơi chứa các menu
+
+    vùng sẽ thay đổi khi chọn 1 router tương ứng 
+
++ Sử dụng đối tượng Link hoặc NavLink
+
+    <Route path="/" exact component={} /> nơi mà nội dung sẽ đổ lên 
+        path="/"       : đg dẫn
+        component={ }  : component đc load tại đg dân path
+        exact          : chỉ truy cập đến chính xác path (các path tương tự nhau sẽ gầy router nhầm lẫn chúng là một, ví dụ {/ và /a, /b /c}, {/a và /a/1})
+
+
+    * lưu ý: phải bọc toàn bộ return trong tag <Router></Router>
+
++ Phân biệt Router và Route
+
+    <Router> là BrowserRouter (làm việc với web)
+
+    <Route> là 1 component, khi muốn render ra 1 giao diện, component phù hợp với đg dẫn path
+
++ <Link></Link>
+
+    + tương tự như tag a, nhưng không load lại trang để chuyển
+
+    + <a href="..." ></a>   ------> <Link to="..." ></Link>
+
++ <NavLink></NavLink>
+    activeStyle={{}} : nếu đang ở path thì kích hoạt các thuộc tính css trong activeStyle
+    activeClassName="" : nếu đang ở path thì kích hoạt class trong activeClass
+    exact : chỉ truy cập đến chính xác path
+
++ custom Link
+
+    ví dụ trong App.js
+const MenuLink = ({ label, to, activeOnlyWhenExact }) => {
+
+    return (
+    
+        <Route
+            path={to}
+            exact={activeOnlyWhenExact}
+            children={({ match }) => {
+                let active = match ? "activeSelect" : "";
+                return (
+                    <li className={active}>
+                        <NavLink
+                            className="nav-link "
+                            aria-current="page"
+                            to={to}
+                            activeStyle={{color:"black"}}
+                        >
+                            {label}
+                        </NavLink>
+                    </li>
+                );
+            }}
+        />
+
+    );
+};
+
+
++ Câu điều kiện switch: giống switch case trong các ngôn ngữ khác
+
+    <Switch>
+        <Route path="/" exact component={Home} />
+        <Route path="/about" exact component={About} />
+        <Route path="/contact" exact component={Contact} />
+        <Route component={NotFound} />                            // case default (ko có path)
+    </Switch>
+
++ khi truy cập vào 1 Route ko tồn tại, phải chuyển về 1 Route NotFound chung
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
