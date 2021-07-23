@@ -1,0 +1,169 @@
+
+--------------react lazy loading vs code splitter---------------------------
+    + thay vì phải tài toàn bộ trang 1 lúc, có thể tải 1 phần trang trước để hiển thị, sau đó
+trong quá trình hiển thị khi người dùng vào các trang naò thì dữ liệu trang đó sẽ lần lượt đc tải
+(tránh trường hợp phải tải các trang mà ng dùng ko vào bao giờ)
+
+    + Ví dụ trong 1 trang có thanh cuộn (scroll) phần còn lại sẽ đc tải khi kéo thanh cuộn xuống
+
+    + dùng cho phiên bản react >= 16.6
+
+    + cách dùng: (demo trong file App.js (* để xem rõ sự thay đổi, chỉnh tốc độ truy cập của web về "slow 3G"))
+
+        import {lazy, Suspense } from "react"; // khai báo 2 thư viện trong react
+
+        const MyComp = lazy( () => import("./components/MyComp") );
+            + khai báo component MyComp là 1 component lazy 
+            + lazy nhận vào tham số là 1 arrow func trả về path import đến component lazy
+
+        <Suspense fallback={<div> Loading... </div>}>
+            <MyComp></MyComp>
+        </Suspense>
+
+        + bọc component MyComp trong Suspense (cho phép hiển thị một số thành phần dự phòng trong khi đợi thành phần con đc hiển thị)
+        + fallback={thành phần dự phòng}
+
+------------------------- react loadable-------------------
+
++ tương tự như lazy react, React Loadable được thiết kế để làm quá trình lấy một gói lớn chứa toàn bộ ứng dụng và chia chúng 
+    thành nhiều gói nhỏ hơn chứa các phần riêng biệt của ứng dụng.
+
++ tối ưu hóa cho việc chia nhỏ các components
+
++ loadable là một HOC (một chức năng tạo ra một thành phần) cho phép tải động bất kỳ mô-đun nào trước khi hiển thị nó vào ứng dụng.
+
++ yarn add react-loadable
+
++ ví dụ: 
+    import Bar from './components/Bar';
+
+    class Foo extends React.Component {
+        render() {
+            return <Bar/>;
+        }
+    }
+
+    * yêu cầu: trì hoãn việc import Bar cho đến khi render đc gọi
+
+    * cách 1 sử dụng  componentWillMount()
+    class MyComponent extends React.Component {
+        state = {
+            Bar: null
+        };
+
+        componentWillMount() {
+            import('./components/Bar').then(Bar => {
+            this.setState({ Bar: Bar.default });
+            });
+        }
+
+        render() {
+            let {Bar} = this.state;
+            if (!Bar) {
+            return <div>Loading...</div>;
+            } else {
+            return <Bar/>;
+            };
+        }
+    }
+
+    (hạn chế: dài dòng, ko xử lý đc nhiều trường hợp)
+
+    * cách 2: sử dụng 
+    import Loadable from 'react-loadable';
+
+    const LoadableBar = Loadable({
+            loader: () => import('./components/Bar'),
+            loading() {
+                return <div>Loading...</div>
+            }
+        });
+
+        class MyComponent extends React.Component {
+        render() {
+            return <LoadableBar/>;
+        }
+    }
+
++ ví dụ: tạo 1 component "Loading..."
+
+    function Loading(props) {
+        if (props.error) {                                                                            // quá trình tải bị lỗi sẽ trả về 1 props.error
+            return <div>Error! <button onClick={ props.retry }>Retry</button></div>;
+        } else if (props.timedOut) {                                                                  // hết thời gian chờ
+            return <div>Taking a long time... <button onClick={ props.retry }>Retry</button></div>;
+        } else if (props.pastDelay) {                                                                // component load sẽ nhận được một props.pastDelay sẽ chỉ đúng khi component đó đã tải lâu hơn một độ trễ đã đặt.
+            return <div>Loading...</div>;
+        } else {
+            return null;
+        }
+    }
+
+    const Loading =  Loadable({
+        loader: () => import('./components/Bar'),
+        loading: Loading,
+        delay: 300, // 0.3 seconds                               // đăt độ trể 
+        timeout: 10000, // 10 seconds                            // thời gian chờ
+    });
+
++ ví dụ: Customizing rendering
+
+    Loadable({
+        loader: () => import('./my-component'),
+        render(loaded, props) {
+            let Component = loaded.namedExport;
+            return <Component {...props}/>;
+        }
+    });
+
++ ví dụ: call API
+    Loadable.Map({
+        loader: {
+            Bar: () => import('./Bar'),
+            i18n: () => fetch('./i18n/bar.json').then(res => res.json()),
+        },
+        render(loaded, props) {
+            let Bar = loaded.Bar.default;
+            let i18n = loaded.i18n;
+            return <Bar {...props} i18n={i18n}/>;
+        },
+    });
+
++ ví dụ: Preloading: Để tối ưu hóa, có thể quyết định tải trước một thành phần trước khi nó được hiển thị.
+
+const LoadableBar = Loadable({
+  loader: () => import('./Bar'),
+  loading: Loading,
+});
+
+class MyComponent extends React.Component {
+  state = { showBar: false };
+
+  onClick = () => {
+    this.setState({ showBar: true });
+  };
+
+  onMouseOver = () => {
+    LoadableBar.preload();                         // tải trước khi con trở chuột đc hover vào
+  };
+
+  render() {
+    return (
+      <div>
+        <button
+          onClick={this.onClick}
+          onMouseOver={this.onMouseOver}>
+          Show Bar
+        </button>
+        {this.state.showBar && <LoadableBar/>}
+      </div>
+    )
+  }
+}
+
+
+
+
+
+
+

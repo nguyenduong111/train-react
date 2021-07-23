@@ -1,0 +1,104 @@
+-------------------Kỹ thuật hạn chế render các dom không cần thiết khi 
+                   cần return nhiều element với react.Fragment ----------------------------------
+
+
++ Fragment là một common pattern được giới thiệu kể từ khi React 16 ra đời. 
+    Cho phép bạn return nhiều element từ một component mà không làm sinh ra những DOM element ko cần thiết.
+
+        render() {
+            return (
+                <React.Fragment>
+                <ChildA />
+                <ChildB />
+                <ChildC />
+                </React.Fragment>
+            );
+        }
+
++ ví dụ:
+    class Table extends React.Component {
+        render() {
+            return (
+            <table>
+                <tr>
+                <Columns />
+                </tr>
+            </table>
+            );
+        }
+    }
+
+    class Columns extends React.Component {
+        render() {
+            return (
+            <React.Fragment>
+                <td>Hello</td>
+                <td>World</td>
+            </React.Fragment>
+            );
+        }
+    }
+
+    kết quả <table>
+                <tr>
+                    <td>Hello</td>
+                    <td>World</td>
+                </tr>
+            </table>
+
+    * cú pháp tắt
+    class Columns extends React.Component {
+        render() {
+            return (
+            <>
+                <td>Hello</td>
+                <td>World</td>
+            </>
+            );
+        }
+    }
+
+    + sử dụng <> </> giống như cách sử dụng bất kỳ phần tử nào khác ngoại trừ việc nó không hỗ trợ keys và attributes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
