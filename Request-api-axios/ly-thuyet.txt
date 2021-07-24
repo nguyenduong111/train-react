@@ -1,0 +1,265 @@
+// demo axios.get trong demo-call-api (file App.js, components/Items.js)
+
+---------------------------------Request api với axios---------------------------------
+
++ Như với Fetch, Axios dựa trên promise-based. Tuy nhiên, axios cung cấp một bộ tính năng mạnh mẽ và linh hoạt hơn.
+
++ cài đặt: npm install axios
+
++ Axios POST request
+
+    - Có thể thực hiện yêu cầu POST bằng cách sử dụng Axios để "đăng" dữ liệu lên một điểm cuối nhất định và kích hoạt các sự kiện.
+    
+    - gọi axios.post ()
+
+    - yêu cầu POST: hai tham số: URI của điểm cuối dịch vụ và một đối tượng có chứa các thuộc tính muốn gửi.
+
+    - Đối với một yêu cầu Axios POST đơn giản, đối tượng phải có thuộc tính url. 
+        Nếu không có phương thức nào được cung cấp, GET sẽ được sử dụng làm giá trị mặc định.
+
+    axios({
+        method: 'post',
+        url: '/login',
+        data: {
+            firstName: 'Finn',
+            lastName: 'Williams'
+        }
+    });
+
+* các phương thức tắt có thể sử dụng
+    axios.request(config)
+    axios.get(url[, config])                  // lấy dữ liệu 
+    axios.delete(url[, config])
+    axios.head(url[, config])
+    axios.options(url[, config])
+    axios.post(url[, data[, config]])        // đẩy dữ liệu lên
+    axios.put(url[, data[, config]])
+    axios.patch(url[, data[, config]])
+
+    ví dụ axios.post () trên
+    axios.post('/login', {
+        firstName: 'Finn',
+        lastName: 'Williams'
+    });
+
+    - Khi một yêu cầu HTTP POST được thực hiện, Axios sẽ trả về một promise được thực hiện(response) hoặc bị từ chối(error),
+        tùy thuộc vào phản hồi từ dịch vụ.
+
+    axios.post('/login', {
+            firstName: 'Finn',
+            lastName: 'Williams'
+        })
+        .then((response) => {
+            console.log(response);
+        }, (error) => {
+            console.log(error);
+        });
+
+    - các giá trị đc cung cấp
+    
+    data: {}: giá trị 
+ 
+    Mã trạng thái đc phản hồi
+    status: 200,
+    
+    Text trạng thái đc phản hồi
+    statusText: 'OK',
+    
+    các tiêu đề mà máy chủ phản hồi
+    headers: {},
+    
+    cấu hình được cung cấp cho` axios` cho yêu cầu
+    config: {},
+    
+    yêu cầu đã tạo ra phản hồi này
+    request: {}
+
+    axios.get('https://api.github.com/users/mapbox')
+    .then((response) => {
+        console.log(response.data);
+        console.log(response.status);
+        console.log(response.statusText);
+        console.log(response.headers);
+        console.log(response.config);
+    });
+
+// logs:
+// => {login: "mapbox", id: 600935, node_id: "MDEyOk9yZ2FuaXphdGlvbjYwMDkzNQ==", avatar_url: "https://avatars1.githubusercontent.com/u/600935?v=4", gravatar_id: "", …}
+// => 200
+// => OK
+// => {x-ratelimit-limit: "60", x-github-media-type: "github.v3", x-ratelimit-remaining: "60", last-modified: "Wed, 01 Aug 2018 02:50:03 GMT", etag: "W/"3062389570cc468e0b474db27046e8c9"", …}
+// => {adapter: ƒ, transformRequest: {…}, transformResponse: {…}, timeout: 0, xsrfCookieName: "XSRF-TOKEN", …}
+
++ Sử dụng axios.all để gửi nhiều yêu cầu
+    
+    - Phương thức này trả về một đối tượng single promise chỉ giải quyết khi tất cả các đối số được truyền dưới dạng một mảng đã được giải quyết.
+
+    axios.all([
+        axios.get('https://api.github.com/users/mapbox'),
+        axios.get('https://api.github.com/users/phantomjs')
+    ])
+    .then(responseArr => {
+        //this will be executed only when all requests are complete
+        console.log('Date created: ', responseArr[0].data.created_at);
+        console.log('Date created: ', responseArr[1].data.created_at);
+    });
+
+    // logs:
+    // => Date created:  2011-02-04T19:02:13Z
+    // => Date created:  2017-04-03T17:25:46Z
+
++ Axios cũng cung cấp một phương thức gọi là axios.spread () để gán các thuộc tính của mảng phản hồi (axios.all) 
+    cho các biến riêng biệt
+
+    axios.all([
+        axios.get('https://api.github.com/users/mapbox'),
+        axios.get('https://api.github.com/users/phantomjs')
+    ])
+    .then(axios.spread((user1, user2) => {
+        console.log('Date created: ', user1.data.created_at);
+        console.log('Date created: ', user2.data.created_at);
+    }));
+
+    // logs:
+    // => Date created:  2011-02-04T19:02:13Z
+    // => Date created:  2017-04-03T17:25:46Z
+
++ Gửi headers tùy chỉnh với Axios. Đơn giản chỉ cần chuyển một đối tượng có chứa header làm đối số cuối cùng. 
+    Ví dụ:
+    const options = {
+        headers: {'X-Custom-Header': 'value'}
+    };
+
+    axios.post('/save', { a: 10 }, options);
+
++ POST JSON với Axios
+    Axios tự động tuần tự hóa các đối tượng JavaScript thành JSON khi được truyền đến hàm
+    axios.post làm tham số thứ hai. 
+    Điều này giúp loại bỏ sự cần thiết phải tuần tự hóa các phần thân POST thành JSON.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

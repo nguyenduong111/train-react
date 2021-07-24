@@ -1,0 +1,69 @@
+----------------------Webpack----------------------------------
++ dùng trong project lớn, dễ phát triển, quản lý
++ tăng tốc độ
++ phân chia các module và chỉ load khi cần thiết
++ đóng gói các file nguồn thành 1 file duy nhất
++ biến các tài nguyên tĩnh(img, css) thnahf 1 module
+
+* reactJS: 
+    + đóng gói các module->rút gọn các đường dẫn
+    + browser ko hiểu JSX (JSX -> JS)
+
++ cài đặt:
+    - phân chia công việc cho từng module
+    - cấu hình với webpack.config.js
+    - cài: npm install --save-dev webpack
+
+--------------------------resolve.alias-------------------------
++ cách rút gọn đường dẫn
+
+    * thông thường: 
+        import Utility from '../../utilities/utility';
+
+    * sử dụng alias
+        import Utility from 'Utilities/utility';
+
++ cấu hình file webpack.config.js    
+    const path = require('path');
+
+    module.exports = {
+        //...
+        resolve: {
+            alias: {
+            Utilities: path.resolve(__dirname, 'src/utilities/'),
+            Templates: path.resolve(__dirname, 'src/templates/'),
+            },
+        },
+    };
+
++ Một $ ở cuối cũng có thể được thêm vào các khóa của đối tượng nhất định để biểu thị một kết quả khớp chính xác.
+    const path = require('path');
+
+    module.exports = {
+    //...
+        resolve: {
+            alias: {
+            xyz$: path.resolve(__dirname, 'path/to/file.js'),
+            },
+        },
+    };
+
+    import Test1 from 'xyz';            // true
+    import Test2 from 'xyz/file.js';    // false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
