@@ -25,6 +25,8 @@
     folder constans (chứa hằng số)
     folder action (chứa các action)
 
++ DEMO TRONG PROJECT-2-TODOLIST
+
 // ------------------------------- xây dựng cấu trúc để hiển thị danh sách------------------------------
     + tạo ra 1 store (duy nhất) (trong src/index.js)
         import { createStore } from 'redux';
