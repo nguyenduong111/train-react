@@ -1,0 +1,78 @@
+------------------------------useContext--------------------------------------
+
++ useContext có thể làm việc với React Context trong một functional component. 
+    Giả sử khi chúng ta muốn lấy giá trị của context trong class component
+
++ đưa các state vào 1 kho riêng, khi đó tất cả các components(đc cho phép) đều có quyền truy cập, thay đổi data vào đó
+
++ sử dụng khi ảnh hưởng đến nhiều components, đến cả app 
+
++ demo sử dụng (trong project demo)
+    App.js
+    components/Item.js
+    components/Theme.js
+
++ giải thích cách dùng
+    
+    - khai báo 1 Context:
+         export const Theme = createContext();
+
+    - định nghiã ra component Context có các state sử dụng chung cho nhiều component khác
+
+    const ThemeContextProvider = ({children}) => {
+        //state
+        ...
+
+        // Context data
+        const themeContextData = {
+            theme,
+            toggleTheme
+        };
+
+        // return provider
+        return(
+            <Theme.Provider value={themeContextData} >
+                {children}
+            </Theme.Provider>
+        );
+    }
+    export default ThemeContextProvider;
+
+    * lưu ý: + component Context return về <Theme.Provider> <các component đc phép truy cập> </Theme.Provider>
+             + props value={<state, data, func>} mà các components khác nhận đc
+
+    + trong componet chính(App.js)
+        phải bọc các components sử dụng Context(Item) trong component Context(ThemeContextProvider)
+
+        <ThemeContextProvider>
+            <Item />
+        </ThemeContextProvider>
+
+    + trong components sử dụng Context(Item)
+        import {Theme} from "./Theme";
+
+        function Item() {
+
+            const {theme, toggleTheme} = useContext(Theme);
+            let {isLightTheme, light, dark} = theme;
+            let style = isLightTheme ? light : dark;
+
+            return (
+                <div className="Item">
+                    <div
+                        className="Item"
+                        style={style}
+                    >
+                        <h1>nguyen thai duong</h1>
+                        <h2>Nam Dinh</h2>
+                    </div>
+
+                    <button onClick={toggleTheme} >change theme</button>
+                </div>
+            );
+        }
+
+        export default Item;
+
+
+

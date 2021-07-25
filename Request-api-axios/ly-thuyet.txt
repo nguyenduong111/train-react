@@ -14,6 +14,8 @@
 
     - yêu cầu POST: hai tham số: URI của điểm cuối dịch vụ và một đối tượng có chứa các thuộc tính muốn gửi.
 
+
+
     - Đối với một yêu cầu Axios POST đơn giản, đối tượng phải có thuộc tính url. 
         Nếu không có phương thức nào được cung cấp, GET sẽ được sử dụng làm giá trị mặc định.
 

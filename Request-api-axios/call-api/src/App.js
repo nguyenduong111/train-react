@@ -16,6 +16,7 @@ function App() {
                 (healthFacility = arrInfo.filter((elem) => elem != null))
             );
         });
+        
     }, []);
 
     return (

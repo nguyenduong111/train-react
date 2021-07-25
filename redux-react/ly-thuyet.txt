@@ -1,0 +1,183 @@
+
+-----------redux----------------
+
+- store: quản lý, kho chứa các state cung cấp cho các component
+
+- các hành động xử lý
+
+    component -------------> actions ----------------> store(reducer)    -----------------------> component   
+                 event                  action        phân tích action      cập nhât state mới
+- điểm mạnh:
+    + quản lý trạng thái ứng dụng (có thể undo, redo)
+    + tăng tốc phát triển ứng dụng
+    + các thao tác đc lưu vào cây trạng thái, khi có internet có thể tự đồng bộ lên
+
+- cài đặt thư viện redux vào proiect
+    npm install redux --save
+
+- cài đặt thư viện redex cho project react
+    npm install redux react-redux --save
+
+- kết nối giữa store -> component trong react sử dụng qua provider
+
++ các thành phần cần thiết của 1 react-redux
+    folder reducers (chứa các reducer)
+    folder constans (chứa hằng số)
+    folder action (chứa các action)
+
+// ------------------------------- xây dựng cấu trúc để hiển thị danh sách------------------------------
+    + tạo ra 1 store (duy nhất) (trong src/index.js)
+        import { createStore } from 'redux';
+        import myReducer from "./reducers/index";
+
+        import { Provider } from "react-redux";   // để kết nối từ react -> redux
+
+        const store = createStore(
+            myReducer,
+            window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+        );
+
+        ...
+        <Provider store={store}>  // Provider sẽ cung cấp store cho App
+            <App />
+        </Provider>
+        ...
+
+
+    + tạo redecer trung tâm (trong reducers/index.js)
+        import { combineReducers } from 'redux';    // combineReducers sử dụng nhiều reducers 
+        import tasks from './tasks'
+     
+        const myReducer =  combineReducers (
+            {
+                tasks: tasks,
+                
+            }
+        );
+
+        export default myReducer;
+
+    + tạo 1 actiontype (trong constans/actionType.js)
+       
+        export const LIST_ALL = "LIST_ALL";    // hiển thị danh sách
+
+        export const ADD_TASK = "ADD_TASK";
+
+    + tạo action (trong actions/index.js)
+        
+        import * as type from './../constants/actionTypes'
+
+        export const listAll = () => {
+            return {
+                type: type.LIST_ALL
+            };
+        };
+
+        export const addTask = (task) => {
+            return {
+                type: type.ADD_TASK,
+                task: task
+            };
+        };
+
+
+    + tạo redecer (trong redecers/tasks.js)
+        
+        import * as type from './../constants/actionTypes'
+
+        var initialState = []; // state mặc định
+
+        var myReducer = (state = initialState, action) => {    // nhận vào 2 tham số là state mặc định và action
+
+            switch(action.type) {                // xác định loại action
+        
+                case type.LIST_ALL:              // xử lý khi đã xác định đc action
+                    return state;
+
+                case type.ADD_TASK : 
+                    var newTask = {
+                        id: generateID(),
+                        name: action.task.name,
+                        status: action.task.status
+                    };
+
+                    state.push(newTask);
+                    localStorage.setItem("tasks", JSON.stringify(state));
+                    return [...state];
+            
+            }
+
+            return state;
+        });
+
+        export default myReducer;
+
+//---------------------------- sử dụng vào các components lấy state trong store--------------------------
+
+    + kết nối component với store (trong componets/TaskList.js)
+        import {connect} from 'react-redux';     // kết nối
+
+        // trong redux sẽ hỗ trợ chuyển các state trong store thành props trong component sử dụng
+
+        
+        let {tasks} = props;  // sử dụng
+
+        {...}
+
+        const mapStateToProps = (state) => { // chuyển state store chuyển thành props của component
+            return {
+                tasks: state.tasks
+                // tasks giờ là phần tử của props trong component
+                // state.tasks chính là state trên store
+            };
+        };
+
+        export default connect(mapStateToProps, null)(TaskList);   // connect có 2 tham số (tham số đầu tiên để chuyển state -> props, 
+                                                                                            tham số thứ 2 để chuyển dispatch action -> props)
+
+//---------------------------- sử dụng vào các components truyền các action lên store--------------------------
+    + kết nối component với store (trong componets/TaskForm.js)
+        
+        import { connect } from 'react-redux';    // kết nối
+
+        import * as actions from './../actions/index';
+
+
+        this.props.onAddTask(this.state);   // sử dụng
+        ...
+        {
+            
+        }
+
+        const mapStateToProps = (state) => { // state(store) -> props(component)
+            return {
+
+            };
+        };
+
+        const mapDispatchToProps = (dispatch, props) => { // action(store) => props(component)
+            return {
+                onAddTask : (task) => {
+                    // console.log("------------ ", task);
+                    dispatch(actions.addTask(task));
+
+                    // store gọi action qua hàm dispatch(), khi này, action đã đc truyền vào trong myReducer()
+                    // trong component đã có props.onAddTask(task)
+                },
+
+                onCloseForm: () => {
+                    dispatch(actions.closeForm())
+                }
+            };
+        };
+
+        export default connect(mapStateToProps, mapDispatchToProps)(TaskForm);
+
+
+
+
+
+
+
+
+    
